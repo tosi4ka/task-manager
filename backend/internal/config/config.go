@@ -7,9 +7,10 @@ import (
 )
 
 type Config struct {
-	Port      string
-	DBUrl     string
-	JWTSecret string
+	Port           string
+	DBUrl          string
+	JWTSecret      string
+	MigrationsPath string
 }
 
 func Load() *Config {
@@ -23,9 +24,15 @@ func Load() *Config {
 
 	jwtSecret := os.Getenv("JWT_SECRET")
 
+	migrationsPath := os.Getenv("MIGRATIONS_PATH")
+	if migrationsPath == "" {
+		migrationsPath = "migrations"
+	}
+
 	return &Config{
-		Port:      port,
-		DBUrl:     dbUrl,
-		JWTSecret: jwtSecret,
+		Port:           port,
+		DBUrl:          dbUrl,
+		JWTSecret:      jwtSecret,
+		MigrationsPath: migrationsPath,
 	}
 }

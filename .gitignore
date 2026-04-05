@@ -1,13 +1,12 @@
 .env
-tmp/
 *.env
 
-# Go
-/tmp
-*.exe
-air.toml
+tmp/
+.air.toml
 
-# Node
+*.exe
+vendor/
+
 node_modules
 .next
 
