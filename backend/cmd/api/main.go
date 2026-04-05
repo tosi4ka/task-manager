@@ -6,6 +6,7 @@ import (
 	"task-manager/internal/server"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 func main() {
@@ -13,11 +14,16 @@ func main() {
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
 
-	db, err := db.Connect(cfg)
+	database, err := db.Connect(cfg)
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
+	defer database.Close()
+
+	err = db.RunMigrations(database, cfg.MigrationsPath)
+	if err != nil {
+		panic(err)
+	}
 
 	server.SetupRouter(r)
 
