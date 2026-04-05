@@ -14,6 +14,11 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db: db}
 }
 
+type UserRepo interface {
+	CreateUser(ctx context.Context, u User) (User, error)
+	GetByEmail(ctx context.Context, email string) (User, error)
+}
+
 func (r *UserRepository) CreateUser(ctx context.Context, u User) (User, error) {
 	err := r.db.QueryRowContext(ctx, "INSERT INTO users (name, password, email) VALUES ($1, $2, $3) RETURNING id, name, email, created_at, updated_at", u.Name, u.Password, u.Email).Scan(&u.ID, &u.Name, &u.Email, &u.CreatedAt, &u.UpdatedAt)
 
