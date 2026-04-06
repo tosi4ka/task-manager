@@ -49,3 +49,27 @@ func (s *UserService) Register(ctx context.Context, req RegisterRequest) (AuthRe
 
 	return AuthResponse{User: user}, nil
 }
+
+func (s *UserService) Login(ctx context.Context, req LoginRequest) (AuthResponse, error) {
+	if req.Email == "" {
+		return AuthResponse{}, fmt.Errorf("email is required")
+	}
+	if req.Password == "" {
+		return AuthResponse{}, fmt.Errorf("password is required")
+	}
+
+	user, err := s.repo.GetByEmail(ctx, req.Email)
+	if err != nil {
+		return AuthResponse{}, fmt.Errorf("email didn't exists")
+	}
+
+	err = bcrypt.CompareHashAndPassword(
+		[]byte(user.Password),
+		[]byte(req.Password),
+	)
+	if err != nil {
+		return AuthResponse{}, fmt.Errorf("invalid password")
+	}
+
+	return AuthResponse{User: user}, nil
+}

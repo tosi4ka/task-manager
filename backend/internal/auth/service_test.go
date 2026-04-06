@@ -93,7 +93,7 @@ func TestRegisterDuplicateEmail(t *testing.T) {
 		Password: "password123",
 	})
 	if err != nil {
-		t.Fatalf("первая регистрация упала: %v", err)
+		t.Fatalf("the first registration dropped: %v", err)
 	}
 
 	_, err = svc.Register(context.Background(), RegisterRequest{
@@ -102,6 +102,74 @@ func TestRegisterDuplicateEmail(t *testing.T) {
 		Password: "password123",
 	})
 	if err == nil {
-		t.Error("ожидали ошибку дублирующего email")
+		t.Error("expected a duplicate email error")
+	}
+}
+
+func TestLogin(t *testing.T) {
+	test := []struct {
+		name      string
+		req       LoginRequest
+		expectErr bool
+	}{
+		{name: "Successful registration",
+			req: LoginRequest{
+				Email:    "eby@gmail.com",
+				Password: "password123",
+			},
+			expectErr: false},
+		{
+			name: "Successful login",
+			req: LoginRequest{
+				Email:    "eby@gmail.com",
+				Password: "password123",
+			},
+			expectErr: false,
+		},
+		{
+			name: "empty email",
+			req: LoginRequest{
+				Email:    "",
+				Password: "password123",
+			},
+			expectErr: true,
+		},
+		{
+			name: "empty password",
+			req: LoginRequest{
+				Email:    "eby@gmail.com",
+				Password: "",
+			},
+			expectErr: true,
+		},
+		{
+			name: "wrong password",
+			req: LoginRequest{
+				Email:    "eby@gmail.com",
+				Password: "wrongpassword",
+			},
+			expectErr: true,
+		},
+	}
+
+	for _, tt := range test {
+		t.Run(tt.name, func(t *testing.T) {
+			svc := NewUserService(newMockRepo())
+
+			svc.Register(context.Background(), RegisterRequest{
+				Name:     "Abbey",
+				Email:    "eby@gmail.com",
+				Password: "password123",
+			})
+
+			_, err := svc.Login(context.Background(), tt.req)
+
+			if tt.expectErr && err == nil {
+				t.Errorf("Error asked me to convey that she is busy.")
+			}
+			if !tt.expectErr && err != nil {
+				t.Errorf("didn't expect an error: %v", err)
+			}
+		})
 	}
 }
