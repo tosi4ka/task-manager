@@ -70,7 +70,7 @@ func TestRegister(t *testing.T) {
 
 	for _, tt := range test {
 		t.Run(tt.name, func(t *testing.T) {
-			svc := NewUserService(newMockRepo())
+			svc := NewUserService(newMockRepo(), "test-secret")
 
 			_, err := svc.Register(context.Background(), tt.req)
 
@@ -85,7 +85,7 @@ func TestRegister(t *testing.T) {
 }
 
 func TestRegisterDuplicateEmail(t *testing.T) {
-	svc := NewUserService(newMockRepo())
+	svc := NewUserService(newMockRepo(), "test-secret")
 
 	_, err := svc.Register(context.Background(), RegisterRequest{
 		Name:     "Ely",
@@ -154,7 +154,7 @@ func TestLogin(t *testing.T) {
 
 	for _, tt := range test {
 		t.Run(tt.name, func(t *testing.T) {
-			svc := NewUserService(newMockRepo())
+			svc := NewUserService(newMockRepo(), "test-secret")
 
 			svc.Register(context.Background(), RegisterRequest{
 				Name:     "Abbey",

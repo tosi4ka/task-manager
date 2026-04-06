@@ -8,11 +8,12 @@ import (
 )
 
 type UserService struct {
-	repo UserRepo
+	repo      UserRepo
+	jwtSecret string
 }
 
-func NewUserService(repo UserRepo) *UserService {
-	return &UserService{repo: repo}
+func NewUserService(repo UserRepo, jwtSecret string) *UserService {
+	return &UserService{repo: repo, jwtSecret: jwtSecret}
 }
 
 func (s *UserService) Register(ctx context.Context, req RegisterRequest) (AuthResponse, error) {
@@ -44,10 +45,15 @@ func (s *UserService) Register(ctx context.Context, req RegisterRequest) (AuthRe
 
 	user, err := s.repo.CreateUser(ctx, u)
 	if err != nil {
-		return AuthResponse{}, fmt.Errorf("create user error: %s", err)
+		return AuthResponse{}, fmt.Errorf("token error: %s", err)
 	}
 
-	return AuthResponse{User: user}, nil
+	token, err := GenerateToken(user.ID.String(), s.jwtSecret)
+
+	return AuthResponse{
+		AccessToken: token,
+		User:        user,
+	}, nil
 }
 
 func (s *UserService) Login(ctx context.Context, req LoginRequest) (AuthResponse, error) {
@@ -71,5 +77,13 @@ func (s *UserService) Login(ctx context.Context, req LoginRequest) (AuthResponse
 		return AuthResponse{}, fmt.Errorf("invalid password")
 	}
 
-	return AuthResponse{User: user}, nil
+	token, err := GenerateToken(user.ID.String(), s.jwtSecret)
+	if err != nil {
+		return AuthResponse{}, fmt.Errorf("token error: %s", err)
+	}
+
+	return AuthResponse{
+		AccessToken: token,
+		User:        user,
+	}, nil
 }
