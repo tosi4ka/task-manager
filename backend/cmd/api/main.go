@@ -30,8 +30,7 @@ func main() {
 	service := auth.NewUserService(repo, cfg.JWTSecret)
 	authHandler := server.NewAuthHandler(service)
 
-
-	server.SetupRouter(r, authHandler)
+	server.SetupRouter(r, authHandler, cfg.JWTSecret)
 
 	r.Run(":" + cfg.Port)
 }

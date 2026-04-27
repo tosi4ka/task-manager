@@ -29,4 +29,28 @@ var (
 		Message: "wrong email or password",
 		Status:  400,
 	}
+
+	ErrNameRequired = &AppError{
+		Code:    "VALIDATION_ERROR",
+		Message: "name is required",
+		Status:  400,
+	}
+
+	ErrEmailRequired = &AppError{
+		Code:    "VALIDATION_ERROR",
+		Message: "email is required",
+		Status:  400,
+	}
+
+	ErrPasswordRequired = &AppError{
+		Code:    "VALIDATION_ERROR",
+		Message: "password is required",
+		Status:  400,
+	}
+
+	ErrInternal = &AppError{
+		Code:    "INTERNAL_ERROR",
+		Message: "something went wrong",
+		Status:  500,
+	}
 )

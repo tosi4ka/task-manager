@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,23 +17,23 @@ func NewUserService(repo UserRepo, jwtSecret string) *UserService {
 
 func (s *UserService) Register(ctx context.Context, req RegisterRequest) (AuthResponse, error) {
 	if req.Name == "" {
-		return AuthResponse{}, fmt.Errorf("name is required")
+		return AuthResponse{}, ErrNameRequired
 	}
 	if req.Email == "" {
-		return AuthResponse{}, fmt.Errorf("email is required")
+		return AuthResponse{}, ErrEmailRequired
 	}
 	if req.Password == "" {
-		return AuthResponse{}, fmt.Errorf("password is required")
+		return AuthResponse{}, ErrPasswordRequired
 	}
 
 	_, err := s.repo.GetByEmail(ctx, req.Email)
 	if err == nil {
-		return AuthResponse{}, fmt.Errorf("email already exists")
+		return AuthResponse{}, ErrEmailExists
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return AuthResponse{}, fmt.Errorf("hash error: %s", err)
+		return AuthResponse{}, ErrInternal
 	}
 
 	u := User{
@@ -45,7 +44,7 @@ func (s *UserService) Register(ctx context.Context, req RegisterRequest) (AuthRe
 
 	user, err := s.repo.CreateUser(ctx, u)
 	if err != nil {
-		return AuthResponse{}, fmt.Errorf("token error: %s", err)
+		return AuthResponse{}, ErrInternal
 	}
 
 	token, err := GenerateToken(user.ID.String(), s.jwtSecret)
@@ -58,15 +57,15 @@ func (s *UserService) Register(ctx context.Context, req RegisterRequest) (AuthRe
 
 func (s *UserService) Login(ctx context.Context, req LoginRequest) (AuthResponse, error) {
 	if req.Email == "" {
-		return AuthResponse{}, fmt.Errorf("email is required")
+		return AuthResponse{}, ErrEmailRequired
 	}
 	if req.Password == "" {
-		return AuthResponse{}, fmt.Errorf("password is required")
+		return AuthResponse{}, ErrPasswordRequired
 	}
 
 	user, err := s.repo.GetByEmail(ctx, req.Email)
 	if err != nil {
-		return AuthResponse{}, fmt.Errorf("email didn't exists")
+		return AuthResponse{}, ErrUserNotFound
 	}
 
 	err = bcrypt.CompareHashAndPassword(
@@ -74,12 +73,12 @@ func (s *UserService) Login(ctx context.Context, req LoginRequest) (AuthResponse
 		[]byte(req.Password),
 	)
 	if err != nil {
-		return AuthResponse{}, fmt.Errorf("invalid password")
+		return AuthResponse{}, ErrInvalidCredentials
 	}
 
 	token, err := GenerateToken(user.ID.String(), s.jwtSecret)
 	if err != nil {
-		return AuthResponse{}, fmt.Errorf("token error: %s", err)
+		return AuthResponse{}, ErrInternal
 	}
 
 	return AuthResponse{
