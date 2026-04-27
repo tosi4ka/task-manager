@@ -1,6 +1,7 @@
 package main
 
 import (
+	"task-manager/internal/auth"
 	"task-manager/internal/config"
 	"task-manager/internal/db"
 	"task-manager/internal/server"
@@ -25,7 +26,12 @@ func main() {
 		panic(err)
 	}
 
-	server.SetupRouter(r)
+	repo := auth.NewUserRepository(database)
+	service := auth.NewUserService(repo, cfg.JWTSecret)
+	authHandler := server.NewAuthHandler(service)
+
+
+	server.SetupRouter(r, authHandler)
 
 	r.Run(":" + cfg.Port)
 }
