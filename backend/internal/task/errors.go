@@ -30,6 +30,18 @@ var (
 		Status:  400,
 	}
 
+	ErrTaskNotFound = &AppError{
+		Code:    "VALIDATION_ERROR",
+		Message: "empty field",
+		Status:  400,
+	}
+
+	ErrNothingToUpdate = &AppError{
+		Code:    "VALIDATION_ERROR",
+		Message: "empty field",
+		Status:  400,
+	}
+
 	ErrInternal = &AppError{
 		Code:    "INTERNAL_ERROR",
 		Message: "something went wrong",

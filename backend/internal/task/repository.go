@@ -3,6 +3,8 @@ package task
 import (
 	"context"
 	"database/sql"
+
+	"github.com/google/uuid"
 )
 
 type TaskRepository struct {
@@ -11,6 +13,8 @@ type TaskRepository struct {
 
 type TaskRepo interface {
 	CreateTask(ctx context.Context, t Task) (Task, error)
+	UpdateTask(ctx context.Context, t Task) (Task, error)
+	GetByID(ctx context.Context, id uuid.UUID) (Task, error)
 }
 
 func NewTaskRepository(db *sql.DB) *TaskRepository {
@@ -18,5 +22,9 @@ func NewTaskRepository(db *sql.DB) *TaskRepository {
 }
 
 func (r *TaskRepository) CreateTask(ctx context.Context, t Task) (Task, error) {
+	return Task{}, nil
+}
+
+func (r *TaskRepository) GetByID(ctx context.Context, id uuid.UUID) (Task, error) {
 	return Task{}, nil
 }
