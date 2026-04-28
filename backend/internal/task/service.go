@@ -49,7 +49,7 @@ func (s *TaskService) CreateTask(ctx context.Context, req CreateTaskRequest) (Ta
 	return task, nil
 }
 
-func (s *TaskService) UpdateTask(ctx context.Context, req UpdateTaskRequest, id uuid.UUID) (Task, error) {
+func (s *TaskService) UpdateTask(ctx context.Context, id uuid.UUID, req UpdateTaskRequest) (Task, error) {
 	if req.Title == nil &&
 		req.Description == nil &&
 		req.AssignedTo == nil &&
