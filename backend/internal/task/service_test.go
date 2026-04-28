@@ -141,7 +141,7 @@ func TestUpdateTask(t *testing.T) {
 			repo.task[tt.id] = Task{ID: tt.id}
 			svc := NewTaskService(repo)
 
-			_, err := svc.UpdateTask(context.Background(), tt.req, tt.id)
+			_, err := svc.UpdateTask(context.Background(), tt.id, tt.req)
 
 			if tt.expectErr && err == nil {
 				t.Errorf("expected error but got nil")

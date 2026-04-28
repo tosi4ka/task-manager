@@ -28,3 +28,7 @@ func (r *TaskRepository) CreateTask(ctx context.Context, t Task) (Task, error) {
 func (r *TaskRepository) GetByID(ctx context.Context, id uuid.UUID) (Task, error) {
 	return Task{}, nil
 }
+
+func (r *TaskRepository) UpdateTask(ctx context.Context, t Task) (Task, error) {
+	return Task{}, nil
+}

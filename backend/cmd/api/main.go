@@ -5,6 +5,7 @@ import (
 	"task-manager/internal/config"
 	"task-manager/internal/db"
 	"task-manager/internal/server"
+	"task-manager/internal/task"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -30,7 +31,11 @@ func main() {
 	service := auth.NewUserService(repo, cfg.JWTSecret)
 	authHandler := server.NewAuthHandler(service)
 
-	server.SetupRouter(r, authHandler, cfg.JWTSecret)
+	taskRepo := task.NewTaskRepository(database)
+	taskService := task.NewTaskService(taskRepo)
+	taskHandler := task.NewTaskHandler(taskService)
+
+	server.SetupRouter(r, authHandler, cfg.JWTSecret, taskHandler)
 
 	r.Run(":" + cfg.Port)
 }
