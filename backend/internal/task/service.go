@@ -48,3 +48,45 @@ func (s *TaskService) CreateTask(ctx context.Context, req CreateTaskRequest) (Ta
 
 	return task, nil
 }
+
+func (s *TaskService) UpdateTask(ctx context.Context, req UpdateTaskRequest, id uuid.UUID) (Task, error) {
+	if req.Title == nil &&
+		req.Description == nil &&
+		req.AssignedTo == nil &&
+		req.Estimate == nil &&
+		req.Status == nil &&
+		req.CompletedAt == nil {
+		return Task{}, ErrNothingToUpdate
+	}
+
+	task, err := s.repo.GetByID(ctx, id)
+	if err != nil {
+		return Task{}, ErrTaskNotFound
+	}
+
+	if req.Title != nil {
+		task.Title = *req.Title
+	}
+	if req.Description != nil {
+		task.Description = *req.Description
+	}
+	if req.AssignedTo != nil {
+		task.AssignedTo = *req.AssignedTo
+	}
+	if req.Estimate != nil {
+		task.Estimate = *req.Estimate
+	}
+	if req.Status != nil {
+		task.Status = *req.Status
+	}
+	if req.CompletedAt != nil {
+		task.CompletedAt = req.CompletedAt
+	}
+
+	updatedTask, err := s.repo.UpdateTask(ctx, task)
+	if err != nil {
+		return Task{}, ErrInternal
+	}
+
+	return updatedTask, nil
+}

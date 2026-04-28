@@ -22,6 +22,22 @@ func (m *mockTaskRepo) CreateTask(ctx context.Context, t Task) (Task, error) {
 	return t, nil
 }
 
+func (m *mockTaskRepo) GetByID(ctx context.Context, id uuid.UUID) (Task, error) {
+	t, ok := m.task[id]
+	if !ok {
+		return Task{}, ErrTaskNotFound
+	}
+	return t, nil
+}
+
+func (m *mockTaskRepo) UpdateTask(ctx context.Context, t Task) (Task, error) {
+	m.task[t.ID] = t
+	return t, nil
+}
+
+func strPtr(s string) *string { return &s }
+func intPtr(i int) *int       { return &i }
+
 func TestCreateTask(t *testing.T) {
 	test := []struct {
 		name      string
@@ -95,5 +111,44 @@ func TestAppError(t *testing.T) {
 	err := ErrTitleRequired
 	if err.Error() != "title is required" {
 		t.Errorf("expected 'title is required', got %s", err.Error())
+	}
+}
+
+func TestUpdateTask(t *testing.T) {
+	test := []struct {
+		name      string
+		id        uuid.UUID
+		req       UpdateTaskRequest
+		expectErr bool
+	}{
+		{
+			name:      "Updated successfully",
+			id:        uuid.New(),
+			req:       UpdateTaskRequest{Title: strPtr("New title")},
+			expectErr: false,
+		},
+		{
+			name:      "All fields empty",
+			id:        uuid.New(),
+			req:       UpdateTaskRequest{},
+			expectErr: true,
+		},
+	}
+
+	for _, tt := range test {
+		t.Run(tt.name, func(t *testing.T) {
+			repo := newMockRepo()
+			repo.task[tt.id] = Task{ID: tt.id}
+			svc := NewTaskService(repo)
+
+			_, err := svc.UpdateTask(context.Background(), tt.req, tt.id)
+
+			if tt.expectErr && err == nil {
+				t.Errorf("expected error but got nil")
+			}
+			if !tt.expectErr && err != nil {
+				t.Errorf("didn't expect error: %v", err)
+			}
+		})
 	}
 }
