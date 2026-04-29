@@ -1,0 +1,14 @@
+ALTER TABLE tasks
+    ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES users(id),
+    ADD COLUMN IF NOT EXISTS category VARCHAR(50),
+    ADD COLUMN IF NOT EXISTS priority VARCHAR(50) NOT NULL DEFAULT 'medium',
+    ADD COLUMN IF NOT EXISTS deadline TIMESTAMP;
+
+ALTER TABLE tasks
+    RENAME COLUMN title TO name;
+
+ALTER TABLE tasks
+    DROP COLUMN IF EXISTS assigned_by,
+    DROP COLUMN IF EXISTS assigned_to,
+    DROP COLUMN IF EXISTS estimate,
+    DROP COLUMN IF EXISTS completed_at;
