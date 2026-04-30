@@ -9,6 +9,8 @@ import (
 )
 
 func SetupRouter(r *gin.Engine, auth *AuthHandler, jwtSecret string, task *task.TaskHandler) {
+	r.Use(RateLimitMiddleware())
+
 	r.GET("health", healthHandler)
 	r.POST("/auth/register", auth.Register)
 	r.POST("/auth/login", auth.Login)

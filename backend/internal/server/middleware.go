@@ -3,8 +3,12 @@ package server
 import (
 	"strings"
 	"task-manager/internal/auth"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ulule/limiter/v3"
+	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
+	"github.com/ulule/limiter/v3/drivers/store/memory"
 )
 
 func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
@@ -35,4 +39,14 @@ func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
 		c.Set("user_id", userId)
 		c.Next()
 	}
+}
+
+func RateLimitMiddleware() gin.HandlerFunc {
+	rate := limiter.Rate{
+		Period: 1 * time.Minute,
+		Limit:  60,
+	}
+	store := memory.NewStore()
+	instance := limiter.New(store, rate)
+	return mgin.NewMiddleware(instance)
 }

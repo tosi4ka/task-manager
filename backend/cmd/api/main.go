@@ -17,12 +17,12 @@ import (
 // @version         1.0
 // @description     REST API для управления задачами
 
-// @host      localhost:8080
+// @host            localhost:8080
 // @BasePath  /
 
 // @securityDefinitions.apikey BearerAuth
 // @in header
-// @name Authorization
+// @name            Authorization
 func main() {
 	cfg := config.Load()
 	r := gin.Default()
