@@ -84,3 +84,21 @@ func (h *TaskHandler) ListTasks(c *gin.Context) {
 
 	c.JSON(200, response)
 }
+
+func (h *TaskHandler) DeleteTask(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "invalid id"})
+		return
+	}
+
+	ctx := c.Request.Context()
+	err = h.service.DeleteTask(ctx, id)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	c.Status(204)
+}

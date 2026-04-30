@@ -240,3 +240,53 @@ func TestListTask(t *testing.T) {
 		})
 	}
 }
+
+func (m *mockTaskRepo) DeleteTask(ctx context.Context, id uuid.UUID) error {
+	_, ok := m.task[id]
+	if !ok {
+		return ErrTaskNotFound
+	}
+
+	delete(m.task, id)
+
+	return nil
+}
+
+func TestDeleteTask(t *testing.T) {
+	test := []struct {
+		name      string
+		id        uuid.UUID
+		expectErr bool
+	}{
+		{
+			name:      "Delete successful",
+			id:        uuid.New(),
+			expectErr: false,
+		},
+		{
+			name:      "Error delete",
+			id:        uuid.UUID{},
+			expectErr: true,
+		},
+	}
+
+	for _, tt := range test {
+		t.Run(tt.name, func(t *testing.T) {
+			repo := newMockRepo()
+			repo.task[tt.id] = Task{ID: tt.id}
+
+			svc := NewTaskService(repo)
+
+			ctx := context.Background()
+			err := svc.DeleteTask(ctx, tt.id)
+
+			if tt.expectErr && err == nil {
+				t.Errorf("expected error but got nil")
+			}
+			if !tt.expectErr && err != nil {
+				t.Errorf("didn't expect error: %v", err)
+			}
+
+		})
+	}
+}
