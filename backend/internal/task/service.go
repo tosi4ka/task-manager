@@ -90,3 +90,16 @@ func (s *TaskService) UpdateTask(ctx context.Context, id uuid.UUID, req UpdateTa
 
 	return updatedTask, nil
 }
+
+func (s *TaskService) ListTasks(ctx context.Context, id uuid.UUID) ([]Task, error) {
+	if id == (uuid.UUID{}) {
+		return []Task{}, ErrUserNotFound
+	}
+
+	tasks, err := s.repo.ListTasks(ctx, id)
+	if err != nil {
+		return []Task{}, ErrInternal
+	}
+
+	return tasks, nil
+}

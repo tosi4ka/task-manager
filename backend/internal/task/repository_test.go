@@ -105,13 +105,10 @@ func TestUpdateTaskRepo(t *testing.T) {
 	repo := NewTaskRepository(testDB)
 
 	var userID uuid.UUID
-	err := testDB.QueryRow(
+	testDB.QueryRow(
 		"INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id",
 		"Rick", "MortySanchez@test.com", "Rick",
 	).Scan(&userID)
-	if err != nil {
-		t.Fatalf("не смогли создать пользователя: %v", err)
-	}
 
 	var task Task
 	testDB.QueryRow(
@@ -137,6 +134,44 @@ func TestUpdateTaskRepo(t *testing.T) {
 
 	t.Cleanup(func() {
 		testDB.Exec("DELETE FROM tasks WHERE id = $1", update.ID)
+		testDB.Exec("DELETE FROM users WHERE id = $1", userID)
+	})
+}
+
+func TestListTasksRepo(t *testing.T) {
+	repo := NewTaskRepository(testDB)
+
+	var userID uuid.UUID
+	testDB.QueryRow(
+		"INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id",
+		"Rick", "EvilRickSanchez@test.com", "Rick",
+	).Scan(&userID)
+
+	var firstTask Task
+	testDB.QueryRow(
+		"INSERT INTO tasks (title, description, assigned_by, assigned_to, estimate) VALUES ($1, $2, $3, $4, $5) RETURNING created_at, id, status, updated_at, completed_at",
+		"Assemble an intergalactic antimatter condenser", "We need to fly to Blips and Cheets, get three Class IX crystals, and not lose a single one. Don't screw up, Morty.", userID, userID, 3,
+	).Scan(&firstTask.CreatedAt, &firstTask.ID, &firstTask.Status, &firstTask.UpdatedAt, &firstTask.CompletedAt)
+
+	var secondTask Task
+	testDB.QueryRow(
+		"INSERT INTO tasks (title, description, assigned_by, assigned_to, estimate) VALUES ($1, $2, $3, $4, $5) RETURNING created_at, id, status, updated_at, completed_at",
+		"Fix megaseeds admin interface", "The 'Destroy All' button is back on the home page. Remove it from the settings and add a confirmation. Well... no, let there be a confirmation.", userID, userID, 3,
+	).Scan(&secondTask.CreatedAt, &secondTask.ID, &secondTask.Status, &secondTask.UpdatedAt, &secondTask.CompletedAt)
+
+	ctx := context.Background()
+	listTask, err := repo.ListTasks(ctx, userID)
+
+	if err != nil {
+		t.Fatalf("didn't expect an error: %v", err)
+	}
+
+	if len(listTask) < 2 {
+		t.Errorf("expected at least 2 tasks")
+	}
+
+	t.Cleanup(func() {
+		testDB.Exec("DELETE FROM tasks WHERE assigned_to = $1", userID)
 		testDB.Exec("DELETE FROM users WHERE id = $1", userID)
 	})
 }

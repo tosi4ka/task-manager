@@ -17,6 +17,7 @@ type TaskRepo interface {
 	CreateTask(ctx context.Context, t Task) (Task, error)
 	UpdateTask(ctx context.Context, t Task) (Task, error)
 	GetByID(ctx context.Context, id uuid.UUID) (Task, error)
+	ListTasks(ctx context.Context, id uuid.UUID) ([]Task, error)
 }
 
 func NewTaskRepository(db *sql.DB) *TaskRepository {
@@ -58,4 +59,25 @@ func (r *TaskRepository) UpdateTask(ctx context.Context, t Task) (Task, error) {
 	}
 
 	return t, nil
+}
+
+func (r *TaskRepository) ListTasks(ctx context.Context, id uuid.UUID) ([]Task, error) {
+	rows, err := r.db.QueryContext(ctx, "SELECT title, description, assigned_by, assigned_to, created_at, estimate, id, status, updated_at, completed_at FROM tasks WHERE assigned_to = $1", id)
+	if err != nil {
+		return nil, fmt.Errorf("tasks not found")
+	}
+	defer rows.Close()
+
+	var tasks []Task
+	for rows.Next() {
+		var t Task
+
+		if err := rows.Scan(&t.Title, &t.Description, &t.AssignedBy, &t.AssignedTo, &t.CreatedAt, &t.Estimate, &t.ID, &t.Status, &t.UpdatedAt, &t.CompletedAt); err != nil {
+			return nil, fmt.Errorf("list tasks scan error: %w", err)
+		}
+
+		tasks = append(tasks, t)
+	}
+
+	return tasks, nil
 }

@@ -3,6 +3,7 @@ package task
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -143,6 +144,93 @@ func TestUpdateTask(t *testing.T) {
 
 			_, err := svc.UpdateTask(context.Background(), tt.id, tt.req)
 
+			if tt.expectErr && err == nil {
+				t.Errorf("expected error but got nil")
+			}
+			if !tt.expectErr && err != nil {
+				t.Errorf("didn't expect error: %v", err)
+			}
+		})
+	}
+}
+
+func (m *mockTaskRepo) ListTasks(ctx context.Context, id uuid.UUID) ([]Task, error) {
+	var tasks []Task
+	for _, t := range m.task {
+		if t.AssignedTo == id {
+			tasks = append(tasks, t)
+		}
+	}
+	return tasks, nil
+}
+
+func TestListTask(t *testing.T) {
+	userID := uuid.New()
+	completedAt := time.Now()
+
+	test := []struct {
+		name          string
+		id            uuid.UUID
+		seedTasks     []Task
+		expectedCount int
+		expectErr     bool
+	}{
+		{
+			name: "user has tasks",
+			id:   userID,
+			seedTasks: []Task{
+				{
+					Title:       "Assemble an intergalactic antimatter condenser",
+					Description: "We need to fly to Blips and Cheets, get three Class IX crystals, and not lose a single one. Don't screw up, Morty.",
+					AssignedBy:  uuid.New(),
+					AssignedTo:  userID,
+					CreatedAt:   time.Now(),
+					Estimate:    10,
+					ID:          uuid.New(),
+					Status:      StatusInProgress,
+					UpdatedAt:   time.Now(),
+					CompletedAt: nil,
+				},
+				{
+					Title:       "Fix megaseeds admin interface",
+					Description: "The 'Destroy All' button is back on the home page. Remove it from the settings and add a confirmation. Well... no, let there be a confirmation.",
+					AssignedBy:  uuid.New(),
+					AssignedTo:  userID,
+					CreatedAt:   time.Now(),
+					Estimate:    15,
+					ID:          uuid.New(),
+					Status:      StatusInProgress,
+					UpdatedAt:   time.Now(),
+					CompletedAt: &completedAt,
+				},
+			},
+			expectedCount: 2,
+			expectErr:     false,
+		},
+		{
+			name:          "user not found",
+			id:            uuid.UUID{},
+			seedTasks:     nil,
+			expectedCount: 0,
+			expectErr:     true,
+		},
+	}
+
+	for _, tt := range test {
+		t.Run(tt.name, func(t *testing.T) {
+			repo := newMockRepo()
+
+			for _, task := range tt.seedTasks {
+				repo.task[task.ID] = task
+			}
+
+			svc := NewTaskService(repo)
+
+			result, err := svc.ListTasks(context.Background(), tt.id)
+
+			if len(result) != tt.expectedCount {
+				t.Errorf("expected %d tasks, got %d", tt.expectedCount, len(result))
+			}
 			if tt.expectErr && err == nil {
 				t.Errorf("expected error but got nil")
 			}
