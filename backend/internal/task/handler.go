@@ -24,6 +24,15 @@ func handleError(c *gin.Context, err error) {
 	c.JSON(500, ErrInternal)
 }
 
+// @Summary  Creating a task
+// @Tags     tasks
+// @Accept   json
+// @Produce  json
+// @Param    body body     task.CreateTaskRequest  true "Task creation payload"
+// @Success  201  {object} task.Task
+// @Failure  400  {object} ErrorType
+// @Router   /task/createTask [post]
+// @Security BearerAuth
 func (h *TaskHandler) CreateTask(c *gin.Context) {
 	var newTask CreateTaskRequest
 
@@ -42,6 +51,16 @@ func (h *TaskHandler) CreateTask(c *gin.Context) {
 	c.JSON(201, response)
 }
 
+// @Summary  Update a task
+// @Tags     tasks
+// @Accept   json
+// @Produce  json
+// @Param    id   path     string                 true "ID of the task to update"
+// @Param    body body     task.UpdateTaskRequest true "Fields to update (all optional)"
+// @Success  200  {object} task.Task
+// @Failure  400  {object} ErrorType
+// @Router /task/updateTask [patch]
+// @Security BearerAuth
 func (h *TaskHandler) UpdateTask(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -67,6 +86,15 @@ func (h *TaskHandler) UpdateTask(c *gin.Context) {
 	c.JSON(200, response)
 }
 
+// @Summary Show all users tasks
+// @Tags tasks
+// @Accept       json
+// @Produce json
+// @Param id path string true "ID of the user whose tasks to retrieve"
+// @Success 200 {array} task.Task
+// @Failure 400 {object} task.AppError
+// @Router /task/tasksList/{id} [get]
+// @Security     BearerAuth
 func (h *TaskHandler) ListTasks(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -85,6 +113,15 @@ func (h *TaskHandler) ListTasks(c *gin.Context) {
 	c.JSON(200, response)
 }
 
+// @Summary Delete task
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path string true "ID of the task to delete"
+// @Success 204
+// @Failure 400 {object} task.AppError
+// @Router /task/deleteTask/{id} [delete]
+// @Security     BearerAuth
 func (h *TaskHandler) DeleteTask(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
@@ -103,6 +140,15 @@ func (h *TaskHandler) DeleteTask(c *gin.Context) {
 	c.Status(204)
 }
 
+// @Summary Find task by ID
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param id path string true "ID of the task to retrieve"
+// @Success 200 {object} task.Task
+// @Failure 400 {object} task.AppError
+// @Router /task/getById/{id} [get]
+// @Security     BearerAuth
 func (h *TaskHandler) GetByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := uuid.Parse(idStr)
