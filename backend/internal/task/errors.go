@@ -42,6 +42,12 @@ var (
 		Status:  400,
 	}
 
+	ErrUserNotFound = &AppError{
+		Code:    "USER_NOT_FOUND",
+		Message: "there is no user with this ID.",
+		Status:  400,
+	}
+
 	ErrInternal = &AppError{
 		Code:    "INTERNAL_ERROR",
 		Message: "something went wrong",
