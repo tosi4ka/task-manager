@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: taskmanager
+      MIGRATIONS_PATH: migration
+    ports:
+      - '5432:5432'
+
+  app:
+    build: .
+    ports:
+      - '8080:8080'
+    environment:
+      PORT: 8080
+      DB_URL: postgres://postgres:postgres@db:5432/taskmanager?sslmode=disable
+      JWT_SECRET: secret
+      MIGRATIONS_PATH: migration
+    depends_on:
+      - db
