@@ -102,3 +102,21 @@ func (h *TaskHandler) DeleteTask(c *gin.Context) {
 
 	c.Status(204)
 }
+
+func (h *TaskHandler) GetByID(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "invalid id"})
+		return
+	}
+
+	ctx := c.Request.Context()
+	task, err := h.service.GetByID(ctx, id)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	c.JSON(200, task)
+}
