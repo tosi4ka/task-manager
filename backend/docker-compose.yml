@@ -7,7 +7,17 @@ services:
       POSTGRES_DB: taskmanager
       MIGRATIONS_PATH: migration
     ports:
-      - '5432:5432'
+      - '5433:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '6380:6379'
 
   app:
     build: .
@@ -16,7 +26,11 @@ services:
     environment:
       PORT: 8080
       DB_URL: postgres://postgres:postgres@db:5432/taskmanager?sslmode=disable
+      REDIS_URL: redis://redis:6379
       JWT_SECRET: secret
       MIGRATIONS_PATH: migration
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started

@@ -11,6 +11,7 @@ type Config struct {
 	DBUrl          string
 	JWTSecret      string
 	MigrationsPath string
+	RedisURL       string
 }
 
 func Load() *Config {
@@ -29,10 +30,16 @@ func Load() *Config {
 		migrationsPath = "migrations"
 	}
 
+	redisURL := os.Getenv("REDIS_URL")
+	if redisURL == "" {
+		redisURL = "redis://localhost:6379"
+	}
+
 	return &Config{
 		Port:           port,
 		DBUrl:          dbUrl,
 		JWTSecret:      jwtSecret,
 		MigrationsPath: migrationsPath,
+		RedisURL:       redisURL,
 	}
 }

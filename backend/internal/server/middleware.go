@@ -6,9 +6,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	"github.com/ulule/limiter/v3"
 	mgin "github.com/ulule/limiter/v3/drivers/middleware/gin"
-	"github.com/ulule/limiter/v3/drivers/store/memory"
+	redisStore "github.com/ulule/limiter/v3/drivers/store/redis"
 )
 
 func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
@@ -41,12 +42,16 @@ func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
 	}
 }
 
-func RateLimitMiddleware() gin.HandlerFunc {
+func RateLimitMiddleware(r *redis.Client) gin.HandlerFunc {
 	rate := limiter.Rate{
 		Period: 1 * time.Minute,
 		Limit:  60,
 	}
-	store := memory.NewStore()
+	store, err := redisStore.NewStore(r)
+	if err != nil {
+		panic(err)
+	}
+
 	instance := limiter.New(store, rate)
 	return mgin.NewMiddleware(instance)
 }

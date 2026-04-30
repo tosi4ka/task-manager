@@ -15,7 +15,7 @@ import (
 
 // @title           Task Manager API
 // @version         1.0
-// @description     REST API для управления задачами
+// @description     REST API
 
 // @host            localhost:8080
 // @BasePath  /
@@ -34,6 +34,12 @@ func main() {
 	}
 	defer database.Close()
 
+	redis, err := db.ConnectRedis(cfg)
+	if err != nil {
+		panic(err)
+	}
+	defer redis.Close()
+
 	err = db.RunMigrations(database, cfg.MigrationsPath)
 	if err != nil {
 		panic(err)
@@ -47,7 +53,7 @@ func main() {
 	taskService := task.NewTaskService(taskRepo)
 	taskHandler := task.NewTaskHandler(taskService)
 
-	server.SetupRouter(r, authHandler, cfg.JWTSecret, taskHandler)
+	server.SetupRouter(r, authHandler, cfg.JWTSecret, taskHandler, redis)
 
 	r.Run(":" + cfg.Port)
 }

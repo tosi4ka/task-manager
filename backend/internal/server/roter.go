@@ -4,12 +4,13 @@ import (
 	"task-manager/internal/task"
 
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func SetupRouter(r *gin.Engine, auth *AuthHandler, jwtSecret string, task *task.TaskHandler) {
-	r.Use(RateLimitMiddleware())
+func SetupRouter(r *gin.Engine, auth *AuthHandler, jwtSecret string, task *task.TaskHandler, redis *redis.Client) {
+	r.Use(RateLimitMiddleware(redis))
 
 	r.GET("health", healthHandler)
 	r.POST("/auth/register", auth.Register)
