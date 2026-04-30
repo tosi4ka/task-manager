@@ -175,3 +175,36 @@ func TestListTasksRepo(t *testing.T) {
 		testDB.Exec("DELETE FROM users WHERE id = $1", userID)
 	})
 }
+
+func TestDeleteTaskRepo(t *testing.T) {
+	repo := NewTaskRepository(testDB)
+
+	var userID uuid.UUID
+	testDB.QueryRow(
+		"INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id",
+		"Jerry", "Jerry@test.com", "Jerry",
+	).Scan(&userID)
+
+	var task Task
+	testDB.QueryRow(
+		"INSERT INTO tasks (title, description, assigned_by, assigned_to, estimate) VALUES ($1, $2, $3, $4, $5) RETURNING created_at, id, status, updated_at, completed_at",
+		"Don't touch anything in the lab while I'm gone.", "Literally nothing. Don't look at the red button. Don't sniff the blue liquid. Don't try to 'help'. Just sit in the corner and think about something incredibly simple—like working in advertising. That's your level, Jerry.", userID, userID, 3,
+	).Scan(&task.CreatedAt, &task.ID, &task.Status, &task.UpdatedAt, &task.CompletedAt)
+
+	ctx := context.Background()
+	err := repo.DeleteTask(ctx, task.ID)
+
+	if err != nil {
+		t.Fatalf("didn't expect an error: %v", err)
+	}
+
+	_, err = repo.GetByID(ctx, task.ID)
+	if err == nil {
+		t.Errorf("expected task to be deleted, but it still exists")
+	}
+
+	t.Cleanup(func() {
+		testDB.Exec("DELETE FROM tasks WHERE assigned_to = $1", userID)
+		testDB.Exec("DELETE FROM users WHERE id = $1", userID)
+	})
+}

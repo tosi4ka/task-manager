@@ -240,3 +240,7 @@ func TestListTask(t *testing.T) {
 		})
 	}
 }
+
+func (m *mockTaskRepo) DeleteTask(ctx context.Context, id uuid.UUID) error {
+	return nil
+}

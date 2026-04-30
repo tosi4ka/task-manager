@@ -18,6 +18,7 @@ type TaskRepo interface {
 	UpdateTask(ctx context.Context, t Task) (Task, error)
 	GetByID(ctx context.Context, id uuid.UUID) (Task, error)
 	ListTasks(ctx context.Context, id uuid.UUID) ([]Task, error)
+	DeleteTask(ctx context.Context, id uuid.UUID) error
 }
 
 func NewTaskRepository(db *sql.DB) *TaskRepository {
@@ -80,4 +81,14 @@ func (r *TaskRepository) ListTasks(ctx context.Context, id uuid.UUID) ([]Task, e
 	}
 
 	return tasks, nil
+}
+
+func (r *TaskRepository) DeleteTask(ctx context.Context, id uuid.UUID) error {
+	_, err := r.db.ExecContext(ctx, "DELETE FROM tasks WHERE id = $1", id)
+
+	if err != nil {
+		return fmt.Errorf("delete task error: %w", err)
+	}
+
+	return nil
 }
