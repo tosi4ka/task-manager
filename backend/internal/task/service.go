@@ -103,3 +103,16 @@ func (s *TaskService) ListTasks(ctx context.Context, id uuid.UUID) ([]Task, erro
 
 	return tasks, nil
 }
+
+func (s *TaskService) DeleteTask(ctx context.Context, id uuid.UUID) error {
+	if id == (uuid.UUID{}) {
+		return ErrTaskNotFound
+	}
+
+	err := s.repo.DeleteTask(ctx, id)
+	if err != nil {
+		return ErrInternal
+	}
+
+	return nil
+}
