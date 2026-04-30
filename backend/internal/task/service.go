@@ -116,3 +116,16 @@ func (s *TaskService) DeleteTask(ctx context.Context, id uuid.UUID) error {
 
 	return nil
 }
+
+func (s *TaskService) GetByID(ctx context.Context, id uuid.UUID) (Task, error) {
+	if id == (uuid.UUID{}) {
+		return Task{}, ErrTaskNotFound
+	}
+
+	task, err := s.repo.GetByID(ctx, id)
+	if err != nil {
+		return Task{}, ErrInternal
+	}
+
+	return task, nil
+}

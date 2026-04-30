@@ -290,3 +290,42 @@ func TestDeleteTask(t *testing.T) {
 		})
 	}
 }
+
+func TestGetByID(t *testing.T) {
+	test := []struct {
+		name      string
+		id        uuid.UUID
+		expectErr bool
+	}{
+		{
+			name:      "task has been found",
+			id:        uuid.New(),
+			expectErr: false,
+		},
+		{
+			name:      "task not find",
+			id:        uuid.UUID{},
+			expectErr: true,
+		},
+	}
+
+	for _, tt := range test {
+		t.Run(tt.name, func(t *testing.T) {
+			repo := newMockRepo()
+			repo.task[tt.id] = Task{ID: tt.id}
+
+			svc := NewTaskService(repo)
+
+			ctx := context.Background()
+			_, err := svc.GetByID(ctx, tt.id)
+
+			if tt.expectErr && err == nil {
+				t.Errorf("expected error but got nil")
+			}
+			if !tt.expectErr && err != nil {
+				t.Errorf("didn't expect error: %v", err)
+			}
+
+		})
+	}
+}
