@@ -16,5 +16,6 @@ func SetupRouter(r *gin.Engine, auth *AuthHandler, jwtSecret string, task *task.
 	{
 		protected.POST("/task/createTask", task.CreateTask)
 		protected.PATCH("/task/updateTask", task.UpdateTask)
+		protected.GET("/task/tasksList/:id", task.ListTasks)
 	}
 }
