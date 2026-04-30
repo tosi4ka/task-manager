@@ -12,7 +12,7 @@ services:
   app:
     build: .
     ports:
-      - '8080:8080'
+      - '8081:8080'
     environment:
       PORT: 8080
       DB_URL: postgres://postgres:postgres@db:5432/taskmanager?sslmode=disable

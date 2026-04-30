@@ -7,10 +7,22 @@ import (
 	"task-manager/internal/server"
 	"task-manager/internal/task"
 
+	_ "task-manager/docs"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
+// @title           Task Manager API
+// @version         1.0
+// @description     REST API для управления задачами
+
+// @host      localhost:8080
+// @BasePath  /
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	cfg := config.Load()
 	r := gin.Default()
