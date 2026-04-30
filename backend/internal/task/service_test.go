@@ -152,3 +152,7 @@ func TestUpdateTask(t *testing.T) {
 		})
 	}
 }
+
+func (m *mockTaskRepo) ListTasks(ctx context.Context, id uuid.UUID) ([]Task, error) {
+	return []Task{}, nil
+}
