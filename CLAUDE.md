@@ -1,81 +1,74 @@
 # Task Manager API
 
-Go + Gin REST API. Архитектура: Handler → Service → Repository → Database.
+Go + Gin REST API. Architecture: Handler → Service → Repository → Database.
 
-## Стек
+## Stack
 
 - **Backend:** Go + Gin, PostgreSQL + sqlx, JWT (access + refresh), Redis, Docker, Swagger
 - **Frontend:** Next.js + TypeScript, Tailwind CSS, Redux Toolkit + RTK Query, React Hook Form + Zod
-- **Планируется:** WebSockets
+- **Planned:** WebSockets
 
-## Структура проекта
+## Project Structure
 
 backend/
-cmd/api/main.go — точка входа
-docs/ — сгенерированная Swagger документация
+cmd/api/main.go — entry point
+docs/ — generated Swagger documentation
 internal/
-config/config.go — конфиг из env
-db/db.go — подключение к БД
-db/migrate.go — запуск миграций
-db/redis.go — подключение к Redis
-server/handler.go — инициализация хендлеров
+config/config.go — config from env
+db/db.go — database connection
+db/migrate.go — migration runner
+db/redis.go — Redis connection
+server/handler.go — handler initialization
 server/middleware.go — JWT + Rate limiting middleware
-server/roter.go — роутер Gin
+server/router.go — Gin router
 auth/
-model.go — User, токены
-repository.go — SQL запросы
-service.go — бизнес-логика
+model.go — User, tokens
+repository.go — SQL queries
+service.go — business logic
 service_test.go
-jwt.go — генерация/валидация JWT
+jwt.go — JWT generation/validation
 errors.go
 task/
-model.go — Task, статусы, request-типы
-repository.go — SQL запросы
-service.go — бизнес-логика
+model.go — Task, statuses, request types
+repository.go — SQL queries
+service.go — business logic
 service_test.go
-handler.go — HTTP хендлеры
+handler.go — HTTP handlers
 errors.go
 migration/
 000001_create_users.up/down.sql
 000002_create_tasks.up/down.sql
 000003_update_tasks.up/down.sql
 
-## Что уже реализовано
+## What's Already Implemented
 
-- Auth: регистрация, логин, JWT access + refresh
-- JWT middleware для защищённых роутов
-- Rate limiting: 60 req/min per IP через Redis
-- Tasks CRUD: полная реализация (handler, service, repository) — покрыты TDD
-- Swagger документация для всех эндпоинтов
-- Миграции: users + tasks таблицы
-- Docker + docker-compose (PostgreSQL + Redis + App)
-- Healthcheck для БД в docker-compose
+- **Auth:** registration, login, JWT access + refresh tokens
+- JWT middleware for protected routes
+- **Rate limiting:** 60 req/min per IP via Redis
+- **Tasks CRUD:** full implementation (handler, service, repository) — covered with TDD
+- **Swagger documentation** for all endpoints
+- **Migrations:** users + tasks tables
+- **Docker + docker-compose** (PostgreSQL + Redis + App)
+- Healthcheck for DB in docker-compose
 
-## В процессе
+## In Progress
 
-- WebSockets — real-time уведомления
-- Frontend: Next.js + TypeScript + Tailwind + Redux Toolkit + RTK Query
+- **WebSockets** — real-time notifications
+- **Frontend:** Next.js + TypeScript + Tailwind + Redux Toolkit + RTK Query
 
-## Соглашения по коду
+## Code Conventions
 
-- Ошибки: через `fmt.Errorf("context: %w", err)` с wrapping
-- Контекст: всегда первым аргументом `ctx context.Context`
-- UUID: `github.com/google/uuid` для ID
-- Логирование: `slog` (не fmt.Println)
-- Тесты: TDD, моки через интерфейсы
+- Errors: via `fmt.Errorf("context: %w", err)` with wrapping
+- Context: always first argument `ctx context.Context`
+- UUID: `github.com/google/uuid` for IDs
+- Logging: `slog` (not fmt.Println)
+- Tests: TDD, mocks via interfaces
 
-## Полезные команды
+## Useful Commands
 
 ```bash
-go test ./...                         # все тесты
-go test ./internal/task/... -v        # тесты task пакета
-go build ./cmd/api/                   # сборка
-docker compose up --build             # поднять всё окружение
-Как со мной работать (Антон)
-Учусь Go — объясняй каждый файл по строкам
-Объясняй ЗАЧЕМ это решение, не только КАК
-После каждого файла делай короткий конспект
-Если несколько способов — покажи лучший для Go
-Учитывай best practices французского рынка: чистая архитектура, тесты, документация
-
+go test ./...                    # run all tests
+go test ./internal/task/... -v   # run task package tests
+go build ./cmd/api/              # build
+docker compose up --build        # start full environment
 ```

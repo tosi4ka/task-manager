@@ -10,6 +10,7 @@ vendor/
 node_modules
 .next
 
-# IDE
 .vscode
 .idea
+
+CLAUDE.local.md
