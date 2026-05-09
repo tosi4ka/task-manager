@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import CheckIcon from '../icons/CheckIcon'
+import LocaleSwitcher from './LocaleSwitcher'
 
 export default function Navbar() {
 	const t = useTranslations('nav')
@@ -17,6 +18,7 @@ export default function Navbar() {
 					<span className=' text-text'>Task</span>
 					<span className=' text-accent'>Manager</span>
 				</div>
+
 				<div className='hidden md:flex gap-8 text-sm text-muted font-syne font-semibold text-[0.82rem] uppercase tracking-[0.04em]'>
 					<Link href='#'>{t('api')}</Link>
 					<a
@@ -27,7 +29,9 @@ export default function Navbar() {
 					</a>
 					<Link href='#'>{t('architecture')}</Link>
 				</div>
+
 				<div className='flex items-center gap-3'>
+					<LocaleSwitcher className='font-mono text-[0.75rem] tracking-[0.08em] flex gap-2 items-center' />
 					<button className='bg-transparent border border-border_b text-text py-[0.45rem] px-[1.2rem] rounded-[6px] font-syne text-[0.82rem] font-semibold cursor-pointer transition-colors duration-200 hover:border-accent hover:text-accent w-[180px] '>
 						{t('login')}
 					</button>
