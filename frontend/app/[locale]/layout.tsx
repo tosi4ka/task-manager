@@ -2,7 +2,7 @@ import { ReduxProvider } from '@/lib/store/provider'
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Syne } from 'next/font/google'
 import '../globals.css'
 
 const geistSans = Geist({
@@ -13,6 +13,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
 	variable: '--font-geist-mono',
 	subsets: ['latin'],
+})
+
+const syne = Syne({
+	variable: '--font-syne-family',
+	subsets: ['latin'],
+	weight: ['400', '600', '700', '800'],
 })
 
 export const metadata: Metadata = {
@@ -33,7 +39,7 @@ export default async function RootLayout({
 	return (
 		<html
 			lang={locale}
-			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+			className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} h-full antialiased`}
 		>
 			<body className='min-h-full flex flex-col'>
 				<NextIntlClientProvider locale={locale} messages={messages}>

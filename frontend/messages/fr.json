@@ -1,6 +1,7 @@
 {
 	"nav": {
 		"api": "API",
+		"swagger": "Swagger",
 		"architecture": "Architecture",
 		"login": "Se connecter",
 		"register": "Créer un compte →"

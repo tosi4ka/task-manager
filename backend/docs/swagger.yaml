@@ -108,7 +108,7 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: REST API для управления задачами
+  description: REST API for task management
   title: Task Manager API
   version: "1.0"
 paths:

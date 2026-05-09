@@ -1,3 +1,5 @@
+import Navbar from '@/components/landing/Navbar'
+
 export default function Home() {
-	return <div>1234</div>
+	return <Navbar />
 }
