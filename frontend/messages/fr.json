@@ -1,0 +1,24 @@
+{
+	"nav": {
+		"api": "API",
+		"swagger": "Swagger",
+		"architecture": "Architecture",
+		"login": "Se connecter",
+		"register": "Créer un compte →"
+	},
+	"hero": {
+		"badge": "Go + Gin · Next.js · Architecture propre",
+		"title1": "Gérez vos",
+		"title2": "tâches",
+		"title3": "avec clarté.",
+		"sub": "Application full-stack construite avec Go et Next.js, suivant les principes de la clean architecture. Auth JWT · Rate limiting · Documentation Swagger.",
+		"start": "Commencer",
+		"swagger": "Swagger UI →"
+	},
+	"stats": {
+		"rateLimit": "Rate limit par IP",
+		"endpoints": "Endpoints REST",
+		"auth": "Access + Refresh Token",
+		"port": "Port API · Docker"
+	}
+}
