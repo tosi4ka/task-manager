@@ -11,7 +11,7 @@
 		"title1": "Manage your",
 		"title2": "tasks",
 		"title3": "with clarity.",
-		"sub": "Full-stack application built with Go and Next.js, following clean architecture principles. JWT Auth · Rate limiting · Swagger documentation.",
+		"sub": "Full-stack application built with Go and Next.js,\nfollowing clean architecture principles.\nJWT Auth · Rate limiting · Swagger docs.",
 		"start": "Get started",
 		"swagger": "Swagger UI →"
 	},
