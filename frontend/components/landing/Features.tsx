@@ -10,7 +10,7 @@ export default function Features() {
 				What makes it <em className='text-accent not-italic'>stand out</em>
 			</h2>
 
-			<div className='grid grid-cols-3 gap-px bg-border_b border border-border_b rounded-[14px] overflow-hidden'>
+			<div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-px bg-border_b border border-border_b rounded-[14px] overflow-hidden'>
 				{features.map((f, i) => (
 					<div
 						key={i}
@@ -27,7 +27,7 @@ export default function Features() {
 						<div className='font-mono text-[0.75rem] text-muted leading-[1.7] font-light flex-1'>
 							{f.desc}
 						</div>
-						<div className='inline-block mt-4 font-mono text-[0.67rem] text-accent bg-accent/7 border border-accent/15 px-[10px] py-[3px] rounded-full'>
+						<div className='w-fit mt-4 font-mono text-[0.67rem] text-accent bg-accent/7 border border-accent/15 px-2.5 py-0.75 rounded-full'>
 							{f.tag}
 						</div>
 					</div>

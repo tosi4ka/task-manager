@@ -41,7 +41,7 @@ export default async function RootLayout({
 			lang={locale}
 			className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} h-full antialiased`}
 		>
-			<body className='min-h-full flex flex-col'>
+			<body className='min-h-full flex flex-col bg-bg text-text'>
 				<NextIntlClientProvider locale={locale} messages={messages}>
 					<ReduxProvider>{children}</ReduxProvider>
 				</NextIntlClientProvider>
