@@ -19,36 +19,37 @@ export default function Hero() {
 			<div className='absolute rounded-full blur-[120px] opacity-[0.16] pointer-events-none w-[400px] h-[400px] bg-[#4060FF] bottom-0 -left-20' />
 			<div className='absolute rounded-full blur-[120px] opacity-[0.16] pointer-events-none w-[250px] h-[250px] bg-accent2 top-1/2 right-1/4' />
 
-			<div className='inline-flex items-center gap-2 bg-accent/8 border border-accent/20 rounded-full px-3.5 py-1.5 mb-8 w-fit'>
-				<div className='w-1.5 h-1.5 rounded-full bg-accent animate-pulse' />
-				<span className='font-mono text-xs text-accent tracking-wide'>
-					{t('badge')}
-				</span>
-			</div>
+			<div className='xl:pr-130'>
+				<div className='inline-flex items-center gap-2 bg-accent/8 border border-accent/20 rounded-full px-3.5 py-1.5 mb-8 w-fit'>
+					<div className='w-1.5 h-1.5 rounded-full bg-accent animate-pulse' />
+					<span className='font-mono text-xs text-accent tracking-wide'>
+						{t('badge')}
+					</span>
+				</div>
 
-			<h1 className='text-[clamp(2.8rem,6.5vw,6rem)] font-extrabold leading-none tracking-[-0.04em] max-w-[760px] font-syne'>
-				{t('title1')}
-				<br />
-				<span className='text-accent'>{t('title2')}</span>
-				<br />
-				<span className='text-muted'>{t('title3')}</span>
-			</h1>
+				<h1 className='text-[clamp(2.8rem,6.5vw,6rem)] font-extrabold leading-none tracking-[-0.04em] font-syne'>
+					<span className='block'>{t('title1')}</span>
+					<span className='block text-accent'>{t('title2')}</span>
+					<span className='block text-muted'>{t('title3')}</span>
+				</h1>
 
-			<p className='mt-[1.6rem] max-w-[500px] font-mono text-[0.88rem] text-muted font-light leading-[1.75] whitespace-pre-line'>
-				{t('sub')}
-			</p>
+				<p className='mt-[1.6rem] max-w-125 font-mono text-[0.88rem] text-muted font-light leading-[1.75] whitespace-pre-line'>
+					{t('sub')}
+				</p>
 
-			<div className='flex items-center gap-4 mt-10'>
-				<button className='bg-accent text-bg font-syne font-bold text-[0.95rem] px-8 py-3 rounded-lg transition-all hover:opacity-[0.88] hover:bg-transparent hover:text-accent hover:border-accent border'>
-					{t('start')}
-				</button>
-				<a
-					href={`${process.env.NEXT_PUBLIC_API_URL}/swagger/index.html`}
-					target='_blank'
-					className='font-mono text-[0.78rem] text-gold bg-gold/7 border border-gold/20 px-[1.4rem] py-3 rounded-lg transition-colors hover:bg-gold/12'
-				>
-					{t('swagger')}
-				</a>
+				<div className='flex items-center gap-4 mt-10'>
+					<button className='w-45 flex items-center justify-center bg-accent text-bg font-syne font-bold text-[0.95rem] py-3 rounded-lg border border-accent transition-colors hover:bg-transparent hover:text-accent'>
+						{t('start')}
+					</button>
+
+					<a
+						href={`${process.env.NEXT_PUBLIC_API_URL}/swagger/index.html`}
+						target='_blank'
+						className='font-mono text-[0.78rem] text-gold bg-gold/7 border border-gold/20 px-[1.4rem] py-3 rounded-lg transition-colors hover:bg-gold/12'
+					>
+						{t('swagger')}
+					</a>
+				</div>
 			</div>
 
 			<div className='hidden xl:block absolute right-12 top-1/2 -translate-y-1/2 w-[460px] bg-bg2 border border-border_b rounded-[14px] overflow-hidden shadow-[0_40px_120px_rgba(0,0,0,0.6)]'>
